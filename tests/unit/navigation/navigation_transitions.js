@@ -49,7 +49,7 @@
 			};
 			
 
-	module('jquery.mobile.navigation.js', {
+	module('transitions', {
 		setup: function(){
 			//stub to prevent class removal
 			$.fn.animationComplete = function(callback){

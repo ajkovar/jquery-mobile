@@ -3,7 +3,7 @@
  */
 (function($){
 	var changePageFn = $.mobile.changePage;
-	module('jquery.mobile.navigation.js', {
+	module('core', {
 		teardown: function(){
 			$.mobile.changePage = changePageFn;
 		}
