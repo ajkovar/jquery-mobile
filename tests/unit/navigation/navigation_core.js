@@ -167,27 +167,37 @@
 	});
 	
 	//url listening
-	function testListening( prop ){
-		prop = false;
-		var stillListening = false;
-		$(document).bind("pagebeforehide", function(){
-			stillListening = true;
-		});
-		location.hash = "foozball";
+	function testListening( callback ){
+		var wasListening = false;
+		$.mobile.changePage = function(){
+			changePageFn.apply($.mobile, arguments);
+			wasListening = true;
+		};
+		
+		location.hash = Math.random();
 		setTimeout(function(){
-			start();
-			ok( prop == stillListening, prop + " = false disables default hashchange event handler");
-			location.hash = "";
-			prop = true;
+			callback(wasListening);
 		}, 1000);
 	}
 	
 	asyncTest( "ability to disable our hash change event listening internally", function(){
-		testListening( $.mobile.urlHistory.ignoreNextHashChange );
+		$.mobile.urlHistory.ignoreNextHashChange = true;
+		testListening(function(wasListening){
+			ok(!wasListening, "ignoreNextHashChange should.. well.. ignore the next hash change");
+			testListening(function(wasListening){
+				ok(wasListening, "but not the one after!");
+				start();
+			})
+		});
 	});
 	
 	asyncTest( "ability to disable our hash change event listening globally", function(){
-		testListening( $.mobile.hashListeningEnabled );
+		$.mobile.hashListeningEnabled = false;
+		testListening(function(wasListening){
+			ok(!wasListening, "turning off hashListeningEnabled should ignore subsequent hash changes");
+			$.mobile.hashListeningEnabled = true;
+			start();
+		});
 	});
 	
 	asyncTest( "changepage will only run once when a new page is visited", function(){
