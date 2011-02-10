@@ -89,28 +89,16 @@
 
 	test( "explicit transition preferred for page navigation reversal (ie back)", function(){
 		$("#fade-trans > a").click();
-		stop();
-		setTimeout(function(){
-			finishPageTransition();
-			$("#flip-trans > a").click();
-			setTimeout(function(){
-				finishPageTransition();
-				$("#fade-trans > a").click();
-				setTimeout(function(){
-					ok($("#flip-trans").hasClass("fade"), "has fade class");
-					start();
-				},0);
-			},0);
-		},0);
+		finishPageTransition();
+		$("#flip-trans > a").click();
+		finishPageTransition();
+		$("#fade-trans > a").click();
+		ok($("#flip-trans").hasClass("fade"), "has fade class");
 	});
 
 	test( "default transition is slide", function(){
 		$("#default-trans > a").click();
-		stop();
-		setTimeout(function(){
-			ok($("#no-trans").hasClass("slide"), "has slide class");
-			start();
-		},0);
+		ok($("#no-trans").hasClass("slide"), "has slide class");
 	});
 	
 	test( "changePage queues requests", function(){
@@ -120,19 +108,13 @@
 		$.mobile.changePage(firstPage);
 		$.mobile.changePage(secondPage);
 		
-		stop();
-		setTimeout(function(){
-			ok(isTransitioningIn(firstPage), "first page begins transition");
-			ok(!isTransitioningIn(secondPage), "second page doesn't transition yet");
-			
-			finishPageTransition();
-			
-			setTimeout(function(){
-				ok(!isTransitioningIn(firstPage), "first page transition should be complete");
-				ok(isTransitioningIn(secondPage), "second page should begin transitioning");
-				start();
-			},0);
-		},0);
+		ok(isTransitioningIn(firstPage), "first page begins transition");
+		ok(!isTransitioningIn(secondPage), "second page doesn't transition yet");
+		
+		finishPageTransition();
+		
+		ok(!isTransitioningIn(firstPage), "first page transition should be complete");
+		ok(isTransitioningIn(secondPage), "second page should begin transitioning");
 	});
 	
 })(jQuery);
