@@ -218,7 +218,7 @@
 		});
 	});
 	
-	asyncTest( "changepage will only run once when a new page is visited", function(){
+	test( "changepage will only run once when a new page is visited", function(){
 		var called = 0;
 		$.mobile.changePage = function(a,b,c,d,e){
 			changePageFn( a,b,c,d,e );
@@ -226,11 +226,8 @@
 		};
 
 		$('#foo a').click();
-		
-		setTimeout(function(){
-			start();
-			ok(called == 1, "change page should be called once");
-		}, 500);
+		$('#bar').trigger("webkitAnimationEnd");
+		ok(called == 1, "change page should be called once");
 	});
 	
 	test( "changePage will interrupt current transition if another occurs before it completes", function(){
@@ -244,5 +241,56 @@
 		ok(isTransitioningOut(firstPage), "first page is now transitioning out");
 		ok(isTransitioningIn(secondPage), "second page is now transitioning in");
 	});
+	
+	asyncTest("$.fn.animationComplete callback parameter only fires once when webkitAnimationEnd is triggered", function(){
+		var animationCompleteFn = $.fn.animationComplete,
+			count=0;
+		
+		$.fn.animationComplete = function(callback){
+			return animationCompleteFn.call(this, function(){
+				count++;
+				callback();
+			});
+		}
+		$("#foo")
+			.addClass("rotate")
+			.animationComplete(function(){
+				$("#foo").removeClass("rotate")
+			})
+			.trigger("webkitAnimationEnd");
+
+		// give it some time for the animation to end		
+		setTimeout(function(){
+			ok(count===1, "animationComplete callback only called once")
+			$.fn.animationComplete = animationCompleteFn;
+			start();
+		},100)
+	})
+	
+	asyncTest("$.fn.animationComplete callback parameter only fires once when webkitAnimationEnd is not triggered", function(){
+		var animationCompleteFn = $.fn.animationComplete,
+			count=0;
+		
+		$.fn.animationComplete = function(callback){
+			return animationCompleteFn.call(this, function(){
+				count++;
+				callback();
+			});
+		}
+		
+		$("#foo")
+			.addClass("rotate")
+			.animationComplete(function(){
+				$("#foo").removeClass("rotate")
+			});		
+
+		// give it some time for the animation to end
+		setTimeout(function(){
+			ok(count===1, "animationComplete callback only called once")
+			$.fn.animationComplete = animationCompleteFn;
+			
+			start();
+		},100)
+	})
 	
 })(jQuery);

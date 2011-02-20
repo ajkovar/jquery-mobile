@@ -3,7 +3,19 @@
 <head>
 	<meta charset="UTF-8" />
 	<title>jQuery Mobile Navigation Test Suite</title>
-
+	
+	<style>
+	.rotate {
+		-webkit-animation-name: rotate;
+	    -webkit-animation-duration: 10ms;
+	}
+	@-webkit-keyframes rotate {
+		from { -webkit-transform: rotate(0deg) scale(1); }
+		to { -webkit-transform: rotate(360deg) scale(1); }
+	}
+	
+	</style>
+	
 	<script type="text/javascript" src="../../../js/jquery.js"></script>
 	<script type="text/javascript" src="../../../js/jquery.ui.widget.js"></script>
 	<script type="text/javascript" src="../../../js/jquery.mobile.widget.js"></script>

@@ -36,22 +36,23 @@
 			};
 			
 
-	module('transitions', {
-		setup: function(){
-			//stub to prevent class removal
-			$.fn.animationComplete = function(callback){
-				callbackQueue.unshift(callback);
-			};
-			
-		},
-
-		teardown: function(){
-			// unmock animation complete
-			$.fn.animationComplete = animationCompleteFn;
-		}
-	});
+	module('jquery.mobile.navigation.js');
 	
 	QUnit.testStart = function (name) {
+		//stub to prevent class removal
+		$.fn.animationComplete = function(callback){
+			callbackQueue.unshift(callback);
+			return animationCompleteFn.call(this, callback);
+		};
+		location.hash="";
+		clearPageTransitionStack();
+		clearUrlHistory();
+	};
+	
+	QUnit.testDone = function (name) {
+		// unmock animation complete
+		$.fn.animationComplete = animationCompleteFn;
+		location.hash="";
 		clearPageTransitionStack();
 		clearUrlHistory();
 	};
